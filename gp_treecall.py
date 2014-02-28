@@ -26,6 +26,7 @@ import os
 import numpy as np
 
 import hyperopt
+import hypertree.gp_tree
 
 __authors__ = ["Katharina Eggensperger", "Matthias Feurer"]
 __contact__ = "automl.org"
@@ -38,7 +39,7 @@ def pyll_replace_list_with_dict(search_space, indent = 0):
     ""
 
     # Convert to apply first. This makes sure every node of the search space is
-    # an apply or literal node which makes it easier to traverse the tree
+    # an apply or literal node which makes it easier to traverse the gp_tree
     if not isinstance(search_space, hyperopt.pyll.Apply):
         search_space = hyperopt.pyll.as_apply(search_space)
 
@@ -71,7 +72,7 @@ def main():
                       dest="seed",
                       default="123",
                       type=int,
-                      help="Seed for the TPE algorithm")
+                      help="Seed for the Tree algorithm")
     parser.add_option("-r", "--restore",
                       dest="restore",
                       action="store_true",
@@ -95,17 +96,17 @@ def main():
     module = import_module(space)
     search_space = module.space
     fn = import_module(algo)
-    fn = fn.doForTPE
+    fn = fn.doForTree
     
     if options.random:
         # We use a random search
-        suggest = hyperopt.tpe.rand.suggest
+        suggest = hyperopt.rand.suggest
     else:
-        suggest = hyperopt.tpe.suggest
+        suggest = hypertree.gp_tree.suggest
 
     rstate=np.random.RandomState(options.seed)
 
-    # Now run TPE, emulate fmin.fmin()
+    # Now run Tree, emulate fmin.fmin()
     state_filename = "state.pkl"
     if options.restore:
         # We do not need to care about the state of the trials object since it

@@ -71,7 +71,7 @@ def main():
                       dest="seed",
                       default="123",
                       type=int,
-                      help="Seed for the TPE algorithm")
+                      help="Seed for the Anneal algorithm")
     parser.add_option("-r", "--restore",
                       dest="restore",
                       action="store_true",
@@ -95,17 +95,17 @@ def main():
     module = import_module(space)
     search_space = module.space
     fn = import_module(algo)
-    fn = fn.doForTPE
+    fn = fn.doForAnneal
     
     if options.random:
         # We use a random search
-        suggest = hyperopt.tpe.rand.suggest
+        suggest = hyperopt.anneal.rand.suggest
     else:
-        suggest = hyperopt.tpe.suggest
+        suggest = hyperopt.anneal.suggest
 
     rstate=np.random.RandomState(options.seed)
 
-    # Now run TPE, emulate fmin.fmin()
+    # Now run Anneal, emulate fmin.fmin()
     state_filename = "state.pkl"
     if options.restore:
         # We do not need to care about the state of the trials object since it

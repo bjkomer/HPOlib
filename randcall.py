@@ -71,7 +71,7 @@ def main():
                       dest="seed",
                       default="123",
                       type=int,
-                      help="Seed for the TPE algorithm")
+                      help="Seed for the Rand algorithm")
     parser.add_option("-r", "--restore",
                       dest="restore",
                       action="store_true",
@@ -97,15 +97,11 @@ def main():
     fn = import_module(algo)
     fn = fn.doForTPE
     
-    if options.random:
-        # We use a random search
-        suggest = hyperopt.tpe.rand.suggest
-    else:
-        suggest = hyperopt.tpe.suggest
+    suggest = hyperopt.rand.suggest
 
     rstate=np.random.RandomState(options.seed)
 
-    # Now run TPE, emulate fmin.fmin()
+    # Now run Rand, emulate fmin.fmin()
     state_filename = "state.pkl"
     if options.restore:
         # We do not need to care about the state of the trials object since it
